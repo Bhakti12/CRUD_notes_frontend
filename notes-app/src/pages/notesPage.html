@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Notes App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .note-card {
+            width: 250px;
+            height: 300px;
+            border-radius: 15px;
+            padding: 15px;
+            position: relative;
+        }
+        .delete-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+        .edit-btn {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body class="bg-white">
+    <div class="container mt-4">
+        <div class="d-flex align-items-center">
+            <button id="addNoteBtn" class="btn btn-outline-dark rounded-circle d-flex align-items-center justify-content-center" style="width: 80px; height: 80px; font-size: 40px;">
+                +
+            </button>
+            <h2 class="fw-bold ms-3">Notes</h2>
+        </div>
+        <p id="emptyMessage" class="fw-bold mt-3">Empty Notes</p>
+
+        <!-- Color Palette -->
+        <div id="colorPalette" class="d-flex gap-2 mt-3 d-none">
+            <div class="color-circle" style="background-color: #FF8C5B;"></div>
+            <div class="color-circle" style="background-color: #FFEE99;"></div>
+            <div class="color-circle" style="background-color: #4EC5F1;"></div>
+            <div class="color-circle" style="background-color: #D4F07D;"></div>
+            <div class="color-circle" style="background-color: #BFA2F7;"></div>
+        </div>
+
+        <!-- Note Input Card -->
+        <div id="noteInputCard" class="note-card d-none mt-3 p-3" style="max-width: 300px;">
+            <input type="text" id="noteTitle" class="form-control mb-2" placeholder="Title">
+            <textarea id="noteContent" class="form-control mb-2" placeholder="Content" rows="4"></textarea>
+            <button id="saveNoteBtn" class="btn btn-dark w-100">Save</button>
+        </div>
+
+        <!-- Notes Display Section -->
+        <div id="notesContainer" class="d-flex flex-wrap gap-3 mt-3"></div>
+    </div>
+
+    <script>
+        let selectedColor = "";
+        
+        document.getElementById("addNoteBtn").addEventListener("click", function () {
+            let palette = document.getElementById("colorPalette");
+            palette.classList.toggle("d-none");
+        });
+
+        // Handle color selection
+        document.querySelectorAll(".color-circle").forEach(circle => {
+            circle.classList.add("rounded-circle", "border", "border-2");
+            circle.style.width = "40px";
+            circle.style.height = "40px";
+            circle.style.cursor = "pointer";
+
+            circle.addEventListener("click", function () {
+                selectedColor = this.style.backgroundColor;
+                document.getElementById("noteInputCard").classList.remove("d-none");
+                document.getElementById("noteInputCard").style.backgroundColor = selectedColor;
+            });
+        });
+
+        // Save Note
+        document.getElementById("saveNoteBtn").addEventListener("click", function () {
+            let title = document.getElementById("noteTitle").value.trim();
+            let content = document.getElementById("noteContent").value.trim();
+            if (title === "" || content === "") {
+                alert("Please enter a title and content.");
+                return;
+            }
+
+            let noteCard = document.createElement("div");
+            noteCard.classList.add("note-card");
+            noteCard.style.backgroundColor = selectedColor;
+            noteCard.innerHTML = `
+                <h5>${title}</h5>
+                <p>${content}</p>
+                <p class="small text-muted">${new Date().toLocaleTimeString()} ${new Date().toLocaleDateString()}</p>
+                <span class="edit-btn">✏️</span>
+                <span class="delete-btn">🗑️</span>
+            `;
+
+            // Delete Note Functionality
+            noteCard.querySelector(".delete-btn").addEventListener("click", function () {
+                noteCard.remove();
+                checkEmptyMessage();
+            });
+
+            // Edit Note Functionality
+            noteCard.querySelector(".edit-btn").addEventListener("click", function () {
+                document.getElementById("noteTitle").value = title;
+                document.getElementById("noteContent").value = content;
+                document.getElementById("noteInputCard").classList.remove("d-none");
+                noteCard.remove();
+                checkEmptyMessage();
+            });
+
+            document.getElementById("notesContainer").appendChild(noteCard);
+            document.getElementById("noteInputCard").classList.add("d-none");
+
+            // Clear input fields
+            document.getElementById("noteTitle").value = "";
+            document.getElementById("noteContent").value = "";
+
+            checkEmptyMessage();
+        });
+
+        function checkEmptyMessage() {
+            let container = document.getElementById("notesContainer");
+            let emptyMessage = document.getElementById("emptyMessage");
+            emptyMessage.style.display = container.children.length === 0 ? "block" : "none";
+        }
+    </script>
+</body>
+</html>
