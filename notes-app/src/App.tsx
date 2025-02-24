@@ -1,4 +1,5 @@
 import './App.css'
+import NotesPage from './pages/notespage'
 
 function App() {
   // const [count, setCount] = useState(0)
@@ -6,7 +7,7 @@ function App() {
   return (
     <>
       <div>
-        /* write about notes page here */
+        <NotesPage/>
        </div> 
     </>
   )

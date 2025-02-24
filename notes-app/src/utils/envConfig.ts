@@ -1,7 +1,7 @@
-import * as dotenv from "dotenv";
+// import * as dotenv from "dotenv";
 
-dotenv.config();
+// dotenv.config();
 
 export const config = {
-  API_BASE: process.env.API_BASE
+  API_BASE: import.meta.env.API_BASE
 };
