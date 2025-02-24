@@ -3,5 +3,5 @@
 // dotenv.config();
 
 export const config = {
-  API_BASE: import.meta.env.API_BASE
+  API_BASE: import.meta.env.VITE_API_BASE
 };

@@ -5,7 +5,7 @@ import { fetchNotes, addNote, updateNote, deleteNote as deleteNoteApi, Note } fr
 
 const NotesPage = () => {
   const [notes, setNotes] = useState<Note[]>([]);
-  const [showForm, setShowForm] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [noteToEdit, setNoteToEdit] = useState<Note | null>(null);
 
   useEffect(() => {
@@ -35,7 +35,7 @@ const NotesPage = () => {
           : [...prevNotes, updatedNote]
       );
 
-      setShowForm(false);
+      setShowModal(false);
       setNoteToEdit(null);
     } catch (error) {
       console.error("Error saving note:", error);
@@ -53,36 +53,34 @@ const NotesPage = () => {
 
   return (
     <div className="container mt-4">
-      <div className="d-flex align-items-center">
-        <button
-          className="btn btn-outline-dark rounded-circle"
-          style={{ width: "80px", height: "80px", fontSize: "40px" }}
-          onClick={() => setShowForm(true)}
-        >
-          +
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h2 className="fw-bold">📝 My Notes</h2>
+        <button className="btn btn-primary rounded-pill px-4" onClick={() => setShowModal(true)}>
+          ➕ Add Note
         </button>
-        <h2 className="fw-bold ms-3">Notes</h2>
       </div>
 
-      {showForm && <NoteForm onSave={addOrUpdateNote} noteToEdit={noteToEdit} />}
-
-      <div id="notesContainer" className="d-flex flex-wrap gap-3 mt-3">
+      <div id="notesContainer" className="row row-cols-1 row-cols-md-3 g-4">
         {notes.length === 0 ? (
-          <p className="fw-bold mt-3">No Notes Available</p>
+          <p className="fw-bold mt-3 text-center">No Notes Available</p>
         ) : (
           notes.map((note) => (
-            <NoteCard
-              key={note.id}
-              note={note}
-              onEdit={(note) => {
-                setNoteToEdit(note);
-                setShowForm(true);
-              }}
-              onDelete={handleDeleteNote}
-            />
+            <div key={note.id} className="col">
+              <NoteCard
+                note={note}
+                onEdit={(note) => {
+                  setNoteToEdit(note);
+                  setShowModal(true);
+                }}
+                onDelete={handleDeleteNote}
+              />
+            </div>
           ))
         )}
       </div>
+
+      {/* Bootstrap Modal for Note Form */}
+      {showModal && <NoteForm onSave={addOrUpdateNote} noteToEdit={noteToEdit} onClose={() => setShowModal(false)} />}
     </div>
   );
 };

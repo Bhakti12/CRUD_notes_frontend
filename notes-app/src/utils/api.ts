@@ -4,6 +4,9 @@ import { config } from "./envConfig";
 const AUTH_API_URL = `${config.API_BASE}/auth`;
 const TASK_API_URL = `${config.API_BASE}/task`;
 
+console.log(AUTH_API_URL);
+console.log(TASK_API_URL);
+
 export interface Note {
     id: string;
     title: string;
@@ -13,7 +16,8 @@ export interface Note {
   
 
 export const fetchNotes = async (): Promise<Note[]> => {
-    return await apiRequest(TASK_API_URL, "GET");
+    const response =  await apiRequest(TASK_API_URL, "GET");
+    return Array.isArray(response) ? response : [];
 };
 
 export const fetchNoteById = async (id: any): Promise<Note[]> => {
